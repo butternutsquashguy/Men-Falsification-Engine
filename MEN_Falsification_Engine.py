@@ -1,28 +1,11 @@
 # MEN_Falsification_Engine.py
-# Sequential pipeline controller (no parallelization) with full dependency ordering
+# Sequential pipeline controller (updated with summary_stats_generator)
 
 import importlib
 import traceback
 import datetime
 
-# Ordered execution path
-modules = [
-    "template_generator",
-    "inject_echo",
-    "echo_detector_pycbc",
-    "echo_detector_bilby",
-    "echo_detector_comb",
-    "load_cmb",
-    "ring_detector",
-    "ring_classifier_ml",
-    "crossmatch",
-    "null_model",
-    "chirplet_transform_overlay",
-    "pca_clustering_visualizer",
-    "correlation_heatmap_generator",
-    "composite_summary_generator",
-    "simulate_cmb_men"
-]
+modules = ['template_generator', 'inject_echo', 'echo_detector_pycbc', 'echo_detector_bilby', 'echo_detector_comb', 'load_cmb', 'ring_detector', 'ring_classifier_ml', 'crossmatch', 'null_model', 'chirplet_transform_overlay', 'summary_stats_generator', 'pca_clustering_visualizer', 'correlation_heatmap_generator', 'composite_summary_generator', 'simulate_cmb_men']
 
 def log(msg):
     timestamp = datetime.datetime.now().strftime("%H:%M:%S")
