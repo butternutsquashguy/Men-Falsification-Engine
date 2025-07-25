@@ -1,39 +1,32 @@
-# echo_detector_bilby.py
-# Bilby-based Bayesian inference for MEN echo signals
-
+# echo_detector_bilby.py (patched)
 def main():
     import bilby
     import numpy as np
-    import pandas as pd
-    import matplotlib.pyplot as plt
+    import os
 
     print("🔍 Running Bilby Bayesian echo detector...")
 
-    # Generate fake data
-    duration = 4
-    sampling_frequency = 1024
-    time = np.linspace(0, duration, duration * sampling_frequency)
-    data = np.random.normal(0, 1e-21, len(time))
+    x = np.linspace(0, 1, 1000)
+    y = np.sin(2 * np.pi * 200 * x) + np.random.normal(0, 0.1, len(x))
 
-    # Define echo template
-    def echo_model(time, frequency, decay, delay):
-        return np.sin(2 * np.pi * frequency * (time - delay)) * np.exp(-decay * (time - delay)) * (time > delay)
+    priors = dict()
+    priors["frequency"] = bilby.core.prior.Uniform(100, 300, name="frequency")
+    priors["decay"] = bilby.core.prior.Uniform(0.1, 1.5, name="decay")
+    priors["delay"] = bilby.core.prior.Uniform(0.0, 1.0, name="delay")
+    priors["sigma"] = bilby.core.prior.Uniform(0.01, 0.5, name="sigma")  # patched
 
-    def model(time, frequency, decay, delay):
-        return echo_model(time, frequency, decay, delay)
-
-    priors = bilby.core.prior.PriorDict()
-    priors["frequency"] = bilby.core.prior.Uniform(100, 300, "Hz")
-    priors["decay"] = bilby.core.prior.Uniform(0.1, 1.5)
-    priors["delay"] = bilby.core.prior.Uniform(0.0, 1.0)
-
-    likelihood = bilby.likelihood.GaussianLikelihood(time, data, model)
+    likelihood = bilby.likelihood.GaussianLikelihood(x, y, sigma=0.1)
 
     result = bilby.run_sampler(
-        likelihood=likelihood, priors=priors, sampler="dynesty", npoints=100,
-        injection_parameters={"frequency": 150, "decay": 0.8, "delay": 0.3},
-        outdir="outputs", label="echo_candidates_bilby", resume=False, verbose=False
+        likelihood=likelihood,
+        priors=priors,
+        sampler="dynesty",
+        nlive=100,
+        outdir="outputs",
+        label="echo_candidates_bilby",
+        resume=False,
+        verbose=False
     )
 
     result.plot_corner()
-    print("✅ Bilby echo inference complete. Results saved.")
+    print("✅ Bilby echo detection complete.")
