@@ -1,0 +1,12 @@
+numpy
+pandas
+matplotlib
+scikit-learn
+seaborn
+healpy
+pycbc
+bilby
+h5py
+corner
+emcee
+tensorflow

@@ -1,0 +1,17 @@
+name: men-falsification
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - matplotlib
+  - scikit-learn
+  - seaborn
+  - healpy
+  - pycbc
+  - bilby
+  - h5py
+  - emcee
+  - corner
+  - tensorflow
